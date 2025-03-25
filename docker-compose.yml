@@ -1,0 +1,28 @@
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - data-service
+      - ml-service
+  data-service:
+    build: ./data-service
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db/main  # connection string
+    depends_on:
+      - db
+  ml-service:
+    build: ./ml-service
+    depends_on:
+      - db
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=main   # 'main' will act as a default or shared database
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

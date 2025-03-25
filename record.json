@@ -1,0 +1,9 @@
+{
+    "patient_id": "12345",
+    "name": "John Doe",
+    "medication": "Atorvastatin",
+    "dosage": "10 mg",
+    "diagnosis": "High cholesterol",
+    "icd10_code": "E78.0"
+  }
+  

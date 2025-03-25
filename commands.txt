@@ -1,0 +1,32 @@
+build from scratch:
+docker-compose up --build
+
+has been built before:
+docker-compose up
+
+create a new record:
+curl.exe --% -X POST "http://localhost:8000/ingest" -H "Content-Type: application/json" -H "X-Tenant-ID: hospital_a" -d @record.json
+
+predict result:
+curl.exe --% -X POST "http://localhost:8000/predict" -H "Content-Type: application/json" -d @note.json
+
+# Create DataBase
+docker-compose exec data-service python init_tenants.py 
+
+# go to Container bash
+docker exec -it akasa-full-db-1 bash 
+
+# connect to PostgreSQL
+psql -U postgres -d main
+
+# list all schemas
+\dn
+
+# list relation (tables) for all schemas
+\dt *.*
+
+
+# list tables
+\dt hospital_a.*
+# see inside table
+SELECT * FROM hospital_a.patients;
