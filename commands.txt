@@ -30,3 +30,47 @@ psql -U postgres -d main
 \dt hospital_a.*
 # see inside table
 SELECT * FROM hospital_a.patients;
+
+
+
+### AZURE
+
+# login
+az acr login --name akaregistry
+
+# build docker locally
+docker build -t ${ACR_NAME}/akasa-ml-service:latest -f C:/dev/akasa-full/ml-service/Dockerfile C:/dev/akasa-full/ml-service
+
+# push to ACR
+docker push akaregistry.azurecr.io/akasa-ml-service:latest
+
+# list content of ACR
+az acr repository list --name akaregistry --output table 
+
+# connect ACR to kubernetes
+az aks update --name aka --resource-group aka --attach-acr akaregistry
+
+# deploy and apply k8s yaml
+kubectl apply -f C:/dev/aka/k8s/
+
+# install ingress controller
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.7.0/deploy/static/provider/cloud/deploy.yaml
+
+
+# when making a change to the source code
+1-  login to have access to image
+az acr login --name akaregistry
+2- build docker image
+docker build -t akaregistry.azurecr.io/akasa-api-gateway:latest -f C:/dev/aka/api-gateway/Dockerfile C:/dev/aka/api-gateway
+3- push changes to image registry
+docker push akaregistry.azurecr.io/akasa-api-gateway:latest
+
+11- update k8s manifest
+kubectl apply -f C:/dev/aka/k8s/api-gateway-deployment.yaml
+
+4- restart deployment
+kubectl rollout restart deployment akasa-api-gateway
+
+
+# test ml predict
+curl.exe --% -X POST "http://130.107.237.103/api/predict" -H "Content-Type: application/json" -d @C:/dev/aka/note.json

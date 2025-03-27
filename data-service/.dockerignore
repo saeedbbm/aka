@@ -1,0 +1,28 @@
+# Ignore version control directories and files
+.git
+.gitignore
+
+# Ignore Python cache files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment directories
+venv
+env
+*.env
+
+# Ignore logs and temporary files
+*.log
+tmp/
+data/
+
+# Ignore IDE-specific files
+.vscode
+.idea
+
+# Ignore OS-specific files
+.DS_Store
+
+# If your project has additional large folders or files not needed in the image, exclude them as well.

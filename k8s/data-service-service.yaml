@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: akasa-data-service
+spec:
+  type: ClusterIP
+  selector:
+    app: akasa-data-service
+  ports:
+  - port: 8000
+    targetPort: 8000

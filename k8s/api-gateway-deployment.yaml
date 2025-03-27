@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: akasa-api-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: akasa-api-gateway
+  template:
+    metadata:
+      labels:
+        app: akasa-api-gateway
+    spec:
+      containers:
+      - name: akasa-api-gateway
+        image: akaregistry.azurecr.io/akasa-api-gateway:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DATA_SERVICE_URL
+          value: "http://akasa-data-service:8000"
+        - name: ML_SERVICE_URL
+          value: "http://akasa-ml-service:8000"

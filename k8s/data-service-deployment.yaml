@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: akasa-data-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: akasa-data-service
+  template:
+    metadata:
+      labels:
+        app: akasa-data-service
+    spec:
+      containers:
+      - name: akasa-data-service
+        image: akaregistry.azurecr.io/akasa-data-service:latest
+        ports:
+        - containerPort: 8000
