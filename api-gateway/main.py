@@ -14,7 +14,7 @@ ML_SERVICE_URL = os.getenv("ML_SERVICE_URL", "http://akasa-ml-service:8000")
 
 @api_router.get("/ping")
 def ping():
-    return {"status": "gateway ok"}
+    return {"status": "gateway ok-tested"}
 
 @api_router.post("/ingest")
 async def proxy_ingest(request: Request, tenant_id: str = Header(..., alias="X-Tenant-ID")):
