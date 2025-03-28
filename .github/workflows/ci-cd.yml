@@ -62,7 +62,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
+
       - name: Set up kubectl
         uses: azure/setup-kubectl@v1
         with:
@@ -71,7 +71,7 @@ jobs:
       # Get AKS credentials (make sure the resource group and cluster name are correct)
       - name: Get AKS Credentials
         run: |
-          az aks get-credentials --resource-group aka --name myAKSCluster --overwrite-existing
+          az aks get-credentials --resource-group aka --name aka --overwrite-existing
 
       # Deploy the updated manifests
       - name: Deploy to AKS
