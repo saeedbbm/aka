@@ -1,0 +1,71 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Log in to Azure (this uses a service principal defined in the repository secrets)
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Build and push API Gateway image
+      - name: Build API Gateway Image
+        run: |
+          docker build -t akaregistry.azurecr.io/akasa-api-gateway:latest -f api-gateway/Dockerfile api-gateway
+      - name: Push API Gateway Image
+        run: |
+          docker push akaregistry.azurecr.io/akasa-api-gateway:latest
+
+      # Build and push Data Service image
+      - name: Build Data Service Image
+        run: |
+          docker build -t akaregistry.azurecr.io/akasa-data-service:latest -f data-service/Dockerfile data-service
+      - name: Push Data Service Image
+        run: |
+          docker push akaregistry.azurecr.io/akasa-data-service:latest
+
+      # Build and push ML Service image
+      - name: Build ML Service Image
+        run: |
+          docker build -t akaregistry.azurecr.io/akasa-ml-service:latest -f ml-service/Dockerfile ml-service
+      - name: Push ML Service Image
+        run: |
+          docker push akaregistry.azurecr.io/akasa-ml-service:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'v1.20.0'
+
+      # Get AKS credentials (make sure the resource group and cluster name are correct)
+      - name: Get AKS Credentials
+        run: |
+          az aks get-credentials --resource-group aka --name myAKSCluster --overwrite-existing
+
+      # Deploy the updated manifests
+      - name: Deploy to AKS
+        run: |
+          kubectl apply -f k8s/
