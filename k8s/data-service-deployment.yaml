@@ -15,5 +15,6 @@ spec:
       containers:
       - name: akasa-data-service
         image: akaregistry.azurecr.io/akasa-data-service:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000

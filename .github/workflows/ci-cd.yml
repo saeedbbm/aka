@@ -73,7 +73,20 @@ jobs:
         run: |
           az aks get-credentials --resource-group aka --name aka --overwrite-existing
 
+      - name: Check Deployed Image Versions - Before
+        run: |
+          kubectl get pods -l app=akasa-api-gateway -o jsonpath="{.items[*].spec.containers[*].image}"
+
       # Deploy the updated manifests
       - name: Deploy to AKS
         run: |
           kubectl apply -f k8s/
+
+      # Optionally, force a rollout restart so new images are used
+      - name: Restart API Gateway Deployment
+        run: |
+          kubectl rollout restart deployment akasa-api-gateway
+
+      - name: Check Deployed Image Versions - After
+        run: |
+          kubectl get pods -l app=akasa-api-gateway -o jsonpath="{.items[*].spec.containers[*].image}"

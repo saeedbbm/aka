@@ -15,5 +15,6 @@ spec:
       containers:
       - name: akasa-ml-service
         image: akaregistry.azurecr.io/akasa-ml-service:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000

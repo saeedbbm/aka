@@ -15,6 +15,7 @@ spec:
       containers:
       - name: akasa-api-gateway
         image: akaregistry.azurecr.io/akasa-api-gateway:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:
